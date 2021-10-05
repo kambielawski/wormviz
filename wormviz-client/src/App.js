@@ -4,12 +4,14 @@ import React, { useState } from 'react';
 import SearchBar from './components/SearchBar';
 import BarGraph from './components/BarGraph';
 import GeneExpBarChart from './components/GeneExpBarChart';
+import LifespanBoxplot from './components/LifespanBoxplot/LifespanBoxplot';
 
 function App() {
 
     const [data, setData] = useState(null);
     const [geneExpData, setGeneExpData] = useState('');
     const [errorMessage, setErrorMessage] = useState(null);
+    const [lifespanData, setLifespanData] = useState(null);
 
     console.log(geneExpData);
 
@@ -38,6 +40,7 @@ function App() {
             </div>
             {/* <BarGraph data={data} /> */}
             {geneExpData ? <GeneExpBarChart data={geneExpData} /> : errorMessage}
+            <LifespanBoxplot rawData={lifespanData} />
         </div>
    );
 }
