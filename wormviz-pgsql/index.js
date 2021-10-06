@@ -29,6 +29,7 @@ app.get('/expression/:id', async (req, res) => {
     }
 });
 
+/* Batch post expression data */
 app.post('/expression', async (req, res) => {
     try {
         const { items } = req.body;
