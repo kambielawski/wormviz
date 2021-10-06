@@ -8,10 +8,8 @@ import LifespanBoxplot from './components/LifespanBoxplot/LifespanBoxplot';
 
 function App() {
 
-    const [data, setData] = useState(null);
     const [geneExpData, setGeneExpData] = useState('');
     const [errorMessage, setErrorMessage] = useState(null);
-    const [lifespanData, setLifespanData] = useState(null);
 
     console.log(geneExpData);
 
@@ -40,7 +38,7 @@ function App() {
             </div>
             {/* <BarGraph data={data} /> */}
             {geneExpData ? <GeneExpBarChart data={geneExpData} /> : errorMessage}
-            <LifespanBoxplot rawData={lifespanData} />
+            <LifespanBoxplot />
         </div>
    );
 }
