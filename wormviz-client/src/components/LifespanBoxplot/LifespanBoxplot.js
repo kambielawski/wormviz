@@ -1,11 +1,56 @@
 import React, { Component, useEffect, useState } from 'react';
 import ReactApexChart from 'react-apexcharts';
 
+const median = arr => {
+    const mid = Math.floor(arr.length / 2),
+      nums = [...arr].sort((a, b) => a - b);
+    return arr.length % 2 !== 0 ? nums[mid] : (nums[mid - 1] + nums[mid]) / 2;
+};
+
+// https://stackoverflow.com/a/55297611
+const quantile = (arr, q) => {
+    const sorted = arr.sort((a,b) => a - b);
+    const pos = (sorted.length - 1) * q;
+    const base = Math.floor(pos);
+    const rest = pos - base;
+    if (sorted[base + 1] !== undefined) {
+        return sorted[base] + rest * (sorted[base + 1] - sorted[base]);
+    } else {
+        return sorted[base];
+    }
+};
+
 function processLifespanData(lifespanEntries) {
     let data = [];
+    let uniquePathogens = {};
 
-    // TODO: process lifespan entries into chart-readable format
-    console.log(lifespanEntries);
+    /* separate by pathogen */
+    for (let entry of lifespanEntries) {
+        if (!uniquePathogens[entry['pathogen']])
+            uniquePathogens[entry['pathogen']] = [];
+        uniquePathogens[entry.pathogen].push(entry);
+    }
+
+    /* Calculate min, 1st quartile, med, 3rd quartile, max */
+    let lt50s, boxplotData;
+    for (let pathogen in uniquePathogens) {
+        lt50s = [];
+        boxplotData = {};
+        for (let entry of uniquePathogens[pathogen]) {
+            lt50s.push(parseInt(entry.lt50));
+        }
+        boxplotData = {
+            x: pathogen,
+            y: [
+                Math.min(...lt50s),
+                quantile(lt50s, 0.25),
+                median(lt50s),
+                quantile(lt50s, 0.75),
+                Math.max(...lt50s),
+            ]
+        }
+        data.push(boxplotData);
+    }
 
     return data;
 }
@@ -21,6 +66,7 @@ function LifespanBoxplot(props) {
             .then((res) => res.json())
             .then((data) => {
                 setBoxplotData(processLifespanData(data));
+                setLoading(false);
             })
             .catch((err) => {
                 console.error(err);
@@ -29,42 +75,12 @@ function LifespanBoxplot(props) {
     }, [])
 
     const chart = {
-        series: boxplotData,
-        // [
-        //   {
-        //     type: 'boxPlot',
-        //     data: [
-        //       {
-        //         x: 'Jan 2015',
-        //         y: [54, 66, 69, 75, 88]
-        //       },
-        //       {
-        //         x: 'Jan 2016',
-        //         y: [43, 65, 69, 76, 81]
-        //       },
-        //       {
-        //         x: 'Jan 2017',
-        //         y: [31, 39, 45, 51, 59]
-        //       },
-        //       {
-        //         x: 'Jan 2018',
-        //         y: [39, 46, 55, 65, 71]
-        //       },
-        //       {
-        //         x: 'Jan 2019',
-        //         y: [29, 31, 35, 39, 44]
-        //       },
-        //       {
-        //         x: 'Jan 2020',
-        //         y: [41, 49, 58, 61, 67]
-        //       },
-        //       {
-        //         x: 'Jan 2021',
-        //         y: [54, 59, 66, 71, 88]
-        //       }
-        //     ]
-        //   }
-        // ],
+        series: [
+          {
+            type: 'boxPlot',
+            data: boxplotData,
+          }
+        ],
         options: {
           chart: {
             type: 'boxPlot',
@@ -72,7 +88,7 @@ function LifespanBoxplot(props) {
             width: 200
           },
           title: {
-            text: 'Lifespan Studies',
+            text: 'Various Pathogens LT50',
             align: 'center'
           },
           plotOptions: {
@@ -82,6 +98,19 @@ function LifespanBoxplot(props) {
                 lower: '#A5978B'
               }
             }
+          },
+          yaxis: {
+              type: 'numeric',
+              min: 0,
+              title: {
+                  text: 'LT50',
+              }
+          },
+          xaxis: {
+              type: 'category',
+              title: {
+                  text: 'Pathogen'
+              }
           }
         },
       };
@@ -93,12 +122,12 @@ function LifespanBoxplot(props) {
         );
       } else {
         return (
-            <div id="chart">  
+            <div style={{paddingLeft: '20%', paddingRight: '20%'}}>  
                 <ReactApexChart
                     options={chart.options} 
                     series={chart.series} 
                     type="boxPlot" 
-                    height={500} 
+                    height={500}
                 />
             </div>
         );
