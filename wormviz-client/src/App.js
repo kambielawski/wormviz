@@ -38,6 +38,7 @@ function App() {
             </div>
             {/* <BarGraph data={data} /> */}
             {geneExpData ? <GeneExpBarChart data={geneExpData} /> : errorMessage}
+            <div style={{ height: '100px' }} />
             <LifespanBoxplot />
         </div>
    );
