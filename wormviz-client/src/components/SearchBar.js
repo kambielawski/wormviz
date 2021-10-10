@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import Button from 'react-bootstrap/Button';
 import InputGroup from 'react-bootstrap/InputGroup';
 import FormControl from 'react-bootstrap/FormControl';
@@ -6,8 +7,6 @@ import FormControl from 'react-bootstrap/FormControl';
 function SearchBar(props)
 {
     const [searchFieldContent, setContent] = useState('');
-
-    console.log(searchFieldContent);
 
     function handleSearchClick() {
         if (searchFieldContent) {
@@ -17,6 +16,7 @@ function SearchBar(props)
     
     return (
         <>
+            <Link to={'/upload'}>Upload Data</Link>
             <p>Search by Wormbase ID</p>
             <div style={styles.container}>
                 <InputGroup style={styles.searchBox}>

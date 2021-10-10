@@ -1,54 +1,17 @@
-import './App.css';
-import React, { useState } from 'react';
+import React from 'react';
+import { BrowserRouter as Router, Route } from 'react-router-dom';
 
-import SearchBar from './components/SearchBar';
-import BarGraph from './components/BarGraph';
-import GeneExpBarChart from './components/GeneExpBarChart';
-import LifespanBoxplot from './components/LifespanBoxplot/LifespanBoxplot';
+import DataView from './components/DataView';
+import UploadView from './screens/uploadScreen/UploadScreen';
 
 function App() {
 
-    const [data, setData] = useState(null);
-    const [geneExpData, setGeneExpData] = useState('');
-    const [errorMessage, setErrorMessage] = useState(null);
-    const [lifespanData, setLifespanData] = useState(null);
-
-    console.log(geneExpData);
-
-    function queryGene(wormbaseid) {
-        fetch(`http://localhost:3001/expression/${wormbaseid}`)
-            .then((res) => {
-              return res.json();
-            })
-            .then((data) => {
-                if (data.error) {
-                  setErrorMessage(data.error);
-                } else {
-                  setGeneExpData(data);
-                }
-            })
-            .catch((e) => {
-                setErrorMessage(e.message);
-                console.error(e);
-            });
-    }
-
     return (
-        <div className="App">
-            <div style={styles.searchBar}>
-                <SearchBar setGeneExp={queryGene} />
-            </div>
-            {/* <BarGraph data={data} /> */}
-            {geneExpData ? <GeneExpBarChart data={geneExpData} /> : errorMessage}
-            <LifespanBoxplot rawData={lifespanData} />
-        </div>
+        <Router>
+            <Route exact={true} path={'/'} component={DataView} />
+            <Route path={'/upload'} component={UploadView} />
+        </Router>
    );
-}
-
-const styles = {
-    searchBar: {
-        height: '10%',
-    }
 }
 
 export default App;
