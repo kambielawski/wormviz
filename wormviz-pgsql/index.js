@@ -149,6 +149,29 @@ app.delete('/lifespan', async (req, res) => {
     }
 });
 
+/* TESTING endpoints */
+
+app.post('/test_post', async (req, res) => {
+    try {
+        const { items } = req.body;
+
+        /* construct query string */
+        let query = 'INSERT INTO test_table (col1, col2, col3) VALUES ';
+        for (item of items) {
+            query += `('${item.col1}', '${item.col2}', '${item.col3}'), `;
+        }
+        query = query.slice(0,query.length-2);
+        query += ' RETURNING *;';
+
+        entries = pool.query(query);
+
+        res.json(entries.rows);
+
+    } catch (err) {
+        console.error(err);
+    }
+});
+
 app.listen(3001, () => {
     console.log('server is listening on port 3001');
 });
