@@ -13,11 +13,10 @@ CREATE TABLE lifespan(
 );
 
 CREATE TABLE expression(
-    wormbaseId VARCHAR(255) PRIMARY KEY,
-    egl19_1 INTEGER,
-    egl19_2 INTEGER,
-    egl19_3 INTEGER,
-    zf35_1 INTEGER,
-    zf35_2 INTEGER,
-    zf35_3 INTEGER
+    id SERIAL PRIMARY KEY,
+    wormbaseId VARCHAR(255) NOT NULL,
+    expression INTEGER NOT NULL,
+    condition VARCHAR(255),
+    pathogen VARCHAR(255),
+    extended_pathogen VARCHAR(255)
 );
