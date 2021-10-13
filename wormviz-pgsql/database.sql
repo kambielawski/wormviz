@@ -14,7 +14,7 @@ CREATE TABLE lifespan(
 
 CREATE TABLE expression(
     id SERIAL PRIMARY KEY,
-    wormbaseId VARCHAR(255) NOT NULL,
+    wbgene VARCHAR(255) NOT NULL,
     expression INTEGER NOT NULL,
     condition VARCHAR(255),
     pathogen VARCHAR(255),
