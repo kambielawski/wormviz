@@ -8,7 +8,7 @@ app.use(cors());
 // limit 25mb for uploading big files
 app.use(express.json({ limit: '250mb' })); // lets us access req.body
 
-/* ROUTES */
+/******* ROUTES *******/
 
 /* GENE EXPRESSION ROUTES */
 
@@ -16,13 +16,13 @@ app.get('/expression/:id', async (req, res) => {
     try {
         const { id } = req.params;
         const expressionEntry = await pool.query(
-            'SELECT * FROM expression WHERE wormbaseid = $1;',
+            'SELECT * FROM expression WHERE wbgene = $1;',
             [id]
         );
-        if (expressionEntry.rows.length == 0) {
-            res.json({ error: `Couldn't find Wormbase ID ${id || ''} in database` });
+        if (expressionEntry.rows.length) {
+            res.json(expressionEntry.rows);
         } else {
-            res.json(expressionEntry.rows[0]);
+            res.json({ error: `Couldn't find Wormbase ID ${id || ''} in database` });
         }
     } catch (err) {
         console.error(err.message);
@@ -33,22 +33,22 @@ app.get('/expression/:id', async (req, res) => {
 app.post('/expression', async (req, res) => {
     try {
         const { items } = req.body;
-        let newEntry;
-        let newEntries = [];
 
-        // TODO: make a batch insert query 
-        for (entry of items) {
-            newEntry = await pool.query(
-                'INSERT INTO expression (wormbaseid, egl19_1, egl19_2, egl19_3, zf35_1, zf35_2, zf35_3) ' +
-                'VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *;',
-                [entry.geneid, entry.egl19_1, entry.egl19_2, entry.egl19_3, 
-                    entry.zf35_1, entry.zf35_2, entry.zf35_3]
-            );
-            newEntries.push(newEntry.rows);
+        /* construct query string */
+        let query = 'INSERT INTO expression (wbgene, expression, condition, pathogen, extended_pathogen) VALUES ';
+        for (let item of items) {
+            query += `('${item.wbgene}', ${item.expression}, '${item.condition}', '${item.pathogen || ''}', '${item.extended_pathogen || ''}'), `;
         }
-        res.json(newEntries);
+        query = query.slice(0,query.length-2);
+        query += ' RETURNING *;';
+
+        /* make database query */
+        const entries = await pool.query(query);
+
+        res.json(entries.rows);
+
     } catch (err) {
-        console.error(err.message);
+        console.error(err);
     }
 });
 
