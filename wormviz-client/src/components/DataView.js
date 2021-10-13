@@ -8,10 +8,8 @@ import LifespanBoxplot from './LifespanBoxplot/LifespanBoxplot';
 
 function DataView() {
 
-    const [data, setData] = useState(null);
     const [geneExpData, setGeneExpData] = useState('');
     const [errorMessage, setErrorMessage] = useState(null);
-    const [lifespanData, setLifespanData] = useState(null);
 
     function queryGene(wormbaseid) {
         fetch(`http://localhost:3001/expression/${wormbaseid}`)
@@ -39,7 +37,7 @@ function DataView() {
             {/* <BarGraph data={data} /> */}
             {geneExpData ? <GeneExpBarChart data={geneExpData} /> 
                          : <p style={styles.error}>{errorMessage}</p>}
-            <LifespanBoxplot rawData={lifespanData} />
+            <LifespanBoxplot />
         </div>
    );
 }

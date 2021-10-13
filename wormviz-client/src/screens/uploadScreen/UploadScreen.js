@@ -34,7 +34,7 @@ const UploadScreen = (props) => {
 
         let i=0, j=UPLOAD_BATCH_LIMIT;
         while (i < items.length) {
-            await fetch('http://localhost:3001/test_post', 
+            await fetch('http://localhost:3001/expression', 
                 { 
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -120,6 +120,7 @@ const UploadScreen = (props) => {
                     Example:
                 </p>
                 <table style={styles.table}>
+                    <tbody>
                     <tr style={styles.tableRow}>
                         <th style={styles.tableText}>wbgene</th>
                         <th style={styles.tableText}>expression</th>
@@ -134,6 +135,7 @@ const UploadScreen = (props) => {
                         <td style={styles.tableText}>wild-type</td>
                         <td style={styles.tableText}></td>
                     </tr>
+                    </tbody>
                 </table>
                 <p>3. At this time, any other columns in the CSV file will be ignored.</p>
             </div>
