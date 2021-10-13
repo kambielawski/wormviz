@@ -27,8 +27,6 @@ function processExpData(queryResult) {
         }
         data.push(pData);
     }
-
-    console.log(data);
     return data;
 }
 
