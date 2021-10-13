@@ -54,8 +54,6 @@ const UploadScreen = (props) => {
             if (numUploaded === items.length)
                 setLoading({ ...loading, uploading: false, total: totalCount });
         }
-
-        console.log(fileList);
     }
 
     function onUpload() {
@@ -63,7 +61,6 @@ const UploadScreen = (props) => {
         const reader = new FileReader();
         reader.onload = (e) => {
             const items = csvToJson(e.target.result);
-            console.log(items[0]);
 
             /* Check if it has the required columns */
             const requiredCols = ['wbgene', 'pathogen', 'expression'];
