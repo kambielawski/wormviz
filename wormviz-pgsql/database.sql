@@ -17,6 +17,6 @@ CREATE TABLE expression(
     wbgene VARCHAR(255) NOT NULL,
     expression INTEGER NOT NULL,
     condition VARCHAR(255),
-    pathogen VARCHAR(255),
+    pathogen VARCHAR(255) NOT NULL,
     extended_pathogen VARCHAR(255)
 );
