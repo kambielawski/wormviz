@@ -6,7 +6,7 @@ const pool = require('./db');
 
 app.use(cors());
 // limit 25mb for uploading big files
-app.use(express.json({ limit: '25mb' })); // lets us access req.body
+app.use(express.json({ limit: '250mb' })); // lets us access req.body
 
 /* ROUTES */
 
@@ -156,14 +156,15 @@ app.post('/test_post', async (req, res) => {
         const { items } = req.body;
 
         /* construct query string */
-        let query = 'INSERT INTO test_table (col1, col2, col3) VALUES ';
-        for (item of items) {
-            query += `('${item.col1}', '${item.col2}', '${item.col3}'), `;
+        let query = 'INSERT INTO test_table (wbgene, expression, condition, pathogen, extended_pathogen) VALUES ';
+        for (let item of items) {
+            query += `('${item.wbgene}', ${item.expression}, '${item.condition}', '${item.pathogen || ''}', '${item.extended_pathogen || ''}'), `;
         }
         query = query.slice(0,query.length-2);
         query += ' RETURNING *;';
 
-        entries = pool.query(query);
+        /* make database query */
+        const entries = await pool.query(query);
 
         res.json(entries.rows);
 
