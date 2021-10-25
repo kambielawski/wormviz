@@ -6,7 +6,7 @@ import BarGraph from './BarGraph';
 import GeneExpBarChart from './GeneExpBarChart';
 import LifespanBoxplot from './LifespanBoxplot/LifespanBoxplot';
 
-function DataView() {
+function DataView({ history }) {
 
     const [geneExpData, setGeneExpData] = useState('');
     const [errorMessage, setErrorMessage] = useState(null);
@@ -31,6 +31,7 @@ function DataView() {
 
     return (
         <div style={styles.container}>
+            {history.location?.state?.loginError ? <p style={styles.error}>{history.location?.state?.loginError}</p> : null}
             <div style={styles.searchBar}>
                 <SearchBar setGeneExp={queryGene} />
             </div>

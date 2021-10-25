@@ -20,3 +20,7 @@ CREATE TABLE expression(
     pathogen VARCHAR(255) NOT NULL,
     extended_pathogen VARCHAR(255)
 );
+
+CREATE TABLE authorized_emails(
+    email VARCHAR(255) PRIMARY KEY
+);
