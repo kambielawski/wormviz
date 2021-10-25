@@ -1,11 +1,15 @@
 import React, { useState } from 'react';
 import Button from 'react-bootstrap/Button';
+import { GoogleLogout } from 'react-google-login';
+import { Link } from 'react-router-dom';
 
 import csvToJson from './csvtojson';
 
 const UPLOAD_BATCH_LIMIT = 10000;
 
-const UploadScreen = (props) => {
+const clientId = '739250301985-ksa42dhua2tmpck4vib1furefmtqau8i.apps.googleusercontent.com';
+
+const UploadScreen = ({ history }) => {
 
     const [errorMessage, setErrorMessage] = useState(null);
     const [fileList, setFileList] = useState([]);
@@ -34,7 +38,7 @@ const UploadScreen = (props) => {
 
         let i=0, j=UPLOAD_BATCH_LIMIT;
         while (i < items.length) {
-            await fetch('http://localhost:3001/expression', 
+            await fetch('http://localhost:3001/test_post', 
                 { 
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -85,61 +89,75 @@ const UploadScreen = (props) => {
         }
     }
 
+    if (!history.location?.state?.accessToken) history.push({ pathname: '/login' });
+
     return(
-        <div style={styles.container}>
-            <div style={styles.subContainer}>
-                <h3 style={styles.bold}>Upload</h3>
-                <input type="file" onChange={fileChangeHandler} />
-                <p style={styles.error}>{errorMessage}</p>
-                {fileList.length ? <table style={styles.table}>
-                    <tbody>
-                    {fileList.map((file, i) => (
-                        <tr style={styles.tableRow} key={i}>
-                            <td style={styles.tableText}>{file.name}</td>
-                            <td style={styles.tableText}>{loading.total ? numUploaded + ' / ' + loading.total + ' uploaded' : '-'}</td>
+        <>
+            <div style={styles.header}>
+                <Link to={{
+                    pathname: '/'
+                }}>Home</Link>
+                <GoogleLogout
+                    clientId={clientId}
+                    buttonText="Logout"
+                    onLogoutSuccess={() => history.push('/')}
+                />
+            </div>
+            <div style={styles.container}>
+                <div style={styles.subContainer}>
+                    <h3 style={styles.bold}>Upload</h3>
+                    <input type="file" onChange={fileChangeHandler} />
+                    <p style={styles.error}>{errorMessage}</p>
+                    {fileList.length ? <table style={styles.table}>
+                        <tbody>
+                        {fileList.map((file, i) => (
+                            <tr style={styles.tableRow} key={i}>
+                                <td style={styles.tableText}>{file.name}</td>
+                                <td style={styles.tableText}>{loading.total ? numUploaded + ' / ' + loading.total + ' uploaded' : '-'}</td>
+                            </tr>
+                            ))}
+                        </tbody>
+                    </table> : null}
+                    <Button onClick={onUpload}>Upload</Button>
+                </div>
+                <div style={styles.subContainer}>
+                    <h3 style={styles.bold}>Directions</h3>
+                    <p>
+                        1. Upload a comma separated variable (.csv) file with the following columns: 
+                        <strong> wbgene</strong> containing the Wormbase Gene ID (e.g. 'WBGene00007194'),
+                        <strong> expression</strong> containing an integer expression-count for the experiment, and
+                        <strong> pathogen</strong> containing the experiment's relevant pathogen 
+                    </p>
+                    <p>
+                        2. Optionally, you can add an <strong>extended_pathogen</strong> column to specify exactly 
+                        the relevant pathogen; or you can add a <strong>condition</strong> column to specify experiment
+                        conditions. 
+                    </p>
+                    <p>
+                        Example:
+                    </p>
+                    <table style={styles.table}>
+                        <tbody>
+                        <tr style={styles.tableRow}>
+                            <th style={styles.tableText}>wbgene</th>
+                            <th style={styles.tableText}>expression</th>
+                            <th style={styles.tableText}>pathogen</th>
+                            <th style={styles.tableText}>condition</th>
+                            <th style={styles.tableText}>extended_pathogen</th>
                         </tr>
-                        ))}
-                    </tbody>
-                </table> : null}
-                <Button onClick={onUpload}>Upload</Button>
+                        <tr style={styles.tableRow}>
+                            <td style={styles.tableText}>WBGene00010957</td>
+                            <td style={styles.tableText}>1053</td>
+                            <td style={styles.tableText}>N2</td>
+                            <td style={styles.tableText}>wild-type</td>
+                            <td style={styles.tableText}></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <p>3. At this time, any other columns in the CSV file will be ignored.</p>
+                </div>
             </div>
-            <div style={styles.subContainer}>
-                <h3 style={styles.bold}>Directions</h3>
-                <p>
-                    1. Upload a comma separated variable (.csv) file with the following columns: 
-                    <strong> wbgene</strong> containing the Wormbase Gene ID (e.g. 'WBGene00007194'),
-                    <strong> expression</strong> containing an integer expression-count for the experiment, and
-                    <strong> pathogen</strong> containing the experiment's relevant pathogen 
-                </p>
-                <p>
-                    2. Optionally, you can add an <strong>extended_pathogen</strong> column to specify exactly 
-                    the relevant pathogen; or you can add a <strong>condition</strong> column to specify experiment
-                    conditions. 
-                </p>
-                <p>
-                    Example:
-                </p>
-                <table style={styles.table}>
-                    <tbody>
-                    <tr style={styles.tableRow}>
-                        <th style={styles.tableText}>wbgene</th>
-                        <th style={styles.tableText}>expression</th>
-                        <th style={styles.tableText}>pathogen</th>
-                        <th style={styles.tableText}>condition</th>
-                        <th style={styles.tableText}>extended_pathogen</th>
-                    </tr>
-                    <tr style={styles.tableRow}>
-                        <td style={styles.tableText}>WBGene00010957</td>
-                        <td style={styles.tableText}>1053</td>
-                        <td style={styles.tableText}>N2</td>
-                        <td style={styles.tableText}>wild-type</td>
-                        <td style={styles.tableText}></td>
-                    </tr>
-                    </tbody>
-                </table>
-                <p>3. At this time, any other columns in the CSV file will be ignored.</p>
-            </div>
-        </div>
+        </>
     );
 };
 
@@ -149,6 +167,12 @@ const styles = {
         flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center'
+    },
+    header: { 
+        display: 'flex', 
+        justifyContent: 'space-between', 
+        padding: 10, 
+        backgroundColor: '#EAEAEA',
     },
     subContainer: {
         flex: 1,

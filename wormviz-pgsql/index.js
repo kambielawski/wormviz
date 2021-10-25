@@ -158,7 +158,7 @@ app.post('/test_post', async (req, res) => {
         /* construct query string */
         let query = 'INSERT INTO test_table (wbgene, expression, condition, pathogen, extended_pathogen) VALUES ';
         for (let item of items) {
-            query += `('${item.wbgene}', ${item.expression}, '${item.condition}', '${item.pathogen || ''}', '${item.extended_pathogen || ''}'), `;
+            query += `('${item.wbgene}', ${item.expression}, '${item.condition || ''}', '${item.pathogen}', '${item.extended_pathogen || ''}'), `;
         }
         query = query.slice(0,query.length-2);
         query += ' RETURNING *;';
@@ -172,6 +172,35 @@ app.post('/test_post', async (req, res) => {
         console.error(err);
     }
 });
+
+/* AUTH ENDPOINTS */
+
+const LOGIN_SUCCESS = 'LOGIN_SUCCESS';
+const LOGIN_FAILURE = 'LOGIN_FAILURE';
+
+app.post('/add_authorized_email', async (req, res) => {
+    try {
+        const { email } = req.body;
+        const entry = await pool.query('INSERT INTO authorized_emails (email) VALUES ($1) RETURNING *;', [email]);
+        res.json(entry.rows);
+    } catch (err) {
+        console.error(err.message);
+    }
+});
+
+app.get('/login', async (req, res) => {
+    try {
+        const { email } = req.query;
+        const entry = await pool.query('SELECT * FROM authorized_emails WHERE email=$1;', [email]);
+        if (entry.rows.length != 0) {
+            res.json({ status: LOGIN_SUCCESS });
+        } else {
+            res.json({ status: LOGIN_FAILURE });
+        }
+    } catch (err) {
+        console.error(err.message);
+    }
+})
 
 app.listen(3001, () => {
     console.log('server is listening on port 3001');
