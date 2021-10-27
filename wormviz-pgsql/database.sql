@@ -1,6 +1,10 @@
+CREATE USER kam;
+
 CREATE DATABASE worm_database;
 
--- \c into worm_database
+GRANT ALL PRIVILEGES ON DATABASE worm_database TO kam;
+
+\c worm_database
 
 CREATE TABLE lifespan(
     id SERIAL PRIMARY KEY,
@@ -24,3 +28,5 @@ CREATE TABLE expression(
 CREATE TABLE authorized_emails(
     email VARCHAR(255) PRIMARY KEY
 );
+
+INSERT INTO authorized_emails (email) VALUES ('kamtb28@gmail.com');
