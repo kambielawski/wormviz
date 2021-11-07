@@ -2,3 +2,6 @@
 csv_test_cases/*
 csv_test_cases
 .envs
+
+database_init.sql
+build
