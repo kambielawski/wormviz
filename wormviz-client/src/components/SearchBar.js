@@ -16,7 +16,10 @@ function SearchBar(props)
     
     return (
         <>
-            <Link to={'/upload'}>Upload Data</Link>
+            <Link to={{
+                pathname: '/upload',
+                state: props.history?.location?.state,
+            }}>Upload Data</Link>
             <p>Search by Wormbase ID</p>
             <div style={styles.container}>
                 <InputGroup style={styles.searchBox}>

@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import ReactApexChart from 'react-apexcharts';
 
+const BACKEND_HOST = '0.0.0.0:8000';
+
 const median = arr => {
     const mid = Math.floor(arr.length / 2),
       nums = [...arr].sort((a, b) => a - b);
@@ -62,7 +64,7 @@ function LifespanBoxplot(props) {
 
     // fetch lifespan data from database
     useEffect(() => {
-        fetch('http://localhost:3001/lifespan_entries')
+        fetch(`http://${BACKEND_HOST}/lifespan_entries`)
             .then((res) => res.json())
             .then((data) => {
                 setBoxplotData(processLifespanData(data));

@@ -6,13 +6,16 @@ import BarGraph from './BarGraph';
 import GeneExpBarChart from './GeneExpBarChart';
 import LifespanBoxplot from './LifespanBoxplot/LifespanBoxplot';
 
+console.log(process.env);
+const BACKEND_HOST = '0.0.0.0:8000';
+
 function DataView({ history }) {
 
     const [geneExpData, setGeneExpData] = useState('');
     const [errorMessage, setErrorMessage] = useState(null);
 
     function queryGene(wormbaseid) {
-        fetch(`http://localhost:3001/expression/${wormbaseid}`)
+        fetch(`http://${BACKEND_HOST}/expression/${wormbaseid}`)
             .then((res) => {
               return res.json();
             })

@@ -1,6 +1,4 @@
 // Reading the file using default
-// fs npm package
-const fs = require("fs");
 
 function csvToJson(csvString) {
 
@@ -26,8 +24,6 @@ function csvToJson(csvString) {
 	}
 
 	return result;
-
-	// fs.writeFileSync('output.json', JSON.stringify(result));
 }
 
 export default csvToJson;

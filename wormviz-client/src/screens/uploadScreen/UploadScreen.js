@@ -1,13 +1,15 @@
 import React, { useState } from 'react';
 import Button from 'react-bootstrap/Button';
-import { GoogleLogout } from 'react-google-login';
+// import { GoogleLogout } from 'react-google-login';
 import { Link } from 'react-router-dom';
 
 import csvToJson from './csvtojson';
 
 const UPLOAD_BATCH_LIMIT = 10000;
 
-const clientId = '739250301985-ksa42dhua2tmpck4vib1furefmtqau8i.apps.googleusercontent.com';
+// const clientId = '739250301985-ksa42dhua2tmpck4vib1furefmtqau8i.apps.googleusercontent.com';
+
+const BACKEND_HOST = '0.0.0.0:8000';
 
 const UploadScreen = ({ history }) => {
 
@@ -38,7 +40,7 @@ const UploadScreen = ({ history }) => {
 
         let i=0, j=UPLOAD_BATCH_LIMIT;
         while (i < items.length) {
-            await fetch('http://localhost:3001/test_post', 
+            await fetch(`http://${BACKEND_HOST}/test_post`, 
                 { 
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -89,19 +91,20 @@ const UploadScreen = ({ history }) => {
         }
     }
 
-    if (!history.location?.state?.accessToken) history.push({ pathname: '/login' });
+    if (!history.location?.state?.loggedIn) history.push({ pathname: '/login' });
 
     return(
         <>
             <div style={styles.header}>
                 <Link to={{
-                    pathname: '/'
+                    pathname: '/',
+                    state: history.location.state,
                 }}>Home</Link>
-                <GoogleLogout
+                {/* <GoogleLogout
                     clientId={clientId}
                     buttonText="Logout"
                     onLogoutSuccess={() => history.push('/')}
-                />
+                /> */}
             </div>
             <div style={styles.container}>
                 <div style={styles.subContainer}>

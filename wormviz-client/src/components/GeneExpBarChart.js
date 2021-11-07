@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import ReactApexChart from 'react-apexcharts';
+// import ReactApexChart from 'react-apexcharts';
 import { BarChart, Bar, XAxis, YAxis, Label } from 'recharts';
 
 function fieldGetAll(queryResult, field) {
