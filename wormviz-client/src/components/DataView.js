@@ -48,7 +48,6 @@ function DataView({ history }) {
             {errorMessage ? <p style={styles.error}>{errorMessage}</p> : null}
             {geneExpData ? <GeneExpBarChart data={geneExpData} /> : null}
             {wbWidget ? <WBGeneOverview overview={wbWidget} /> : null}
-            {/* <LifespanBoxplot /> */}
         </div>
    );
 }
