@@ -2,11 +2,9 @@
 import React, { useState } from 'react';
 
 import SearchBar from './SearchBar';
-import BarGraph from './BarGraph';
 import GeneExpBarChart from './GeneExpBarChart';
 import LifespanBoxplot from './LifespanBoxplot/LifespanBoxplot';
 
-console.log(process.env);
 const BACKEND_HOST = '0.0.0.0:8000';
 
 function DataView({ history }) {

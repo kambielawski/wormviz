@@ -17,7 +17,7 @@ COPY wormviz-client/ ./
 RUN cp -a /tmp/node_modules /wormviz-client/node_modules
 
 # Expose Port
-EXPOSE 8080
+EXPOSE 80
 
 # Build node app
 RUN npm run build

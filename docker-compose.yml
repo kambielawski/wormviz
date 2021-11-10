@@ -64,7 +64,7 @@ services:
     environment:
       - BACKEND_HOST=0.0.0.0:8000
     ports:
-      - "8080:3000"
+      - "80:3000"
     # Use a script to allow for hot-reloading with container via mounting
     # If node_modules folder already exists, delete it
     # copy node_modules folder from image
