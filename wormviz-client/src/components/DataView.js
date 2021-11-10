@@ -39,7 +39,7 @@ function DataView({ history }) {
             {/* <BarGraph data={data} /> */}
             {geneExpData ? <GeneExpBarChart data={geneExpData} /> 
                          : <p style={styles.error}>{errorMessage}</p>}
-            <LifespanBoxplot />
+            {/* <LifespanBoxplot /> */}
         </div>
    );
 }
