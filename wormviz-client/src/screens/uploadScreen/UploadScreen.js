@@ -83,11 +83,15 @@ const UploadScreen = ({ history }) => {
             }
         }
         /* Check if it is a CSV file */
-        setErrorMessage(null);  
-        if (fileList[0].type === 'text/csv') {
-            reader.readAsText(fileList[0]);
+        setErrorMessage(null);
+        if (fileList[0] !== undefined) {
+            if (fileList[0].type === 'text/csv') {
+                reader.readAsText(fileList[0]);
+            } else {
+                setErrorMessage('Uploads must be CSV files');
+            }
         } else {
-            setErrorMessage('Uploads must be CSV files');
+            setErrorMessage('Must upload a file');
         }
     }
 
