@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import ReactApexChart from 'react-apexcharts';
 
-const BACKEND_HOST = '0.0.0.0:8000';
+const BACKEND_HOST = 'ec2-3-14-80-149.us-east-2.compute.amazonaws.com:8000';
 
 const median = arr => {
     const mid = Math.floor(arr.length / 2),
