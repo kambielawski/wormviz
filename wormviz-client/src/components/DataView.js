@@ -5,7 +5,7 @@ import SearchBar from './SearchBar';
 import GeneExpBarChart from './GeneExpBarChart';
 import LifespanBoxplot from './LifespanBoxplot/LifespanBoxplot';
 
-const BACKEND_HOST = '0.0.0.0:8000';
+const BACKEND_HOST = 'ec2-3-14-80-149.us-east-2.compute.amazonaws.com:8000';
 
 function DataView({ history }) {
 
