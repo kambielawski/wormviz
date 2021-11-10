@@ -9,7 +9,7 @@ const UPLOAD_BATCH_LIMIT = 10000;
 
 // const clientId = '739250301985-ksa42dhua2tmpck4vib1furefmtqau8i.apps.googleusercontent.com';
 
-const BACKEND_HOST = '0.0.0.0:8000';
+const BACKEND_HOST = 'ec2-3-14-80-149.us-east-2.compute.amazonaws.com:8000';
 
 const UploadScreen = ({ history }) => {
 
@@ -40,7 +40,7 @@ const UploadScreen = ({ history }) => {
 
         let i=0, j=UPLOAD_BATCH_LIMIT;
         while (i < items.length) {
-            await fetch(`http://${BACKEND_HOST}/test_post`, 
+            await fetch(`http://${BACKEND_HOST}/expression`, 
                 { 
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
