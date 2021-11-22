@@ -25,6 +25,7 @@ const UploadScreen = ({ history }) => {
         for (let f of event.target.files) {
             if (f.type !== 'text/csv') {
                 setErrorMessage('Uploads must be CSV files');
+                console.log('File type: ', f.type);
             } else {
                 setFileList(fileList => [...fileList, f]);
                     setLoading({ ...loading, total: 0 });
