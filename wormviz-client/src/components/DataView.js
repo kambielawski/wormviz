@@ -13,6 +13,7 @@ function DataView({ history }) {
     const [errorMessage, setErrorMessage] = useState(null);
 
     function queryGene(wormbaseid) {
+        setErrorMessage(null);
         fetch(`http://${BACKEND_HOST}/expression/${wormbaseid}`)
             .then((res) => {
               return res.json();
@@ -37,8 +38,8 @@ function DataView({ history }) {
                 <SearchBar setGeneExp={queryGene} />
             </div>
             {/* <BarGraph data={data} /> */}
-            {geneExpData ? <GeneExpBarChart data={geneExpData} /> 
-                         : <p style={styles.error}>{errorMessage}</p>}
+            {errorMessage ? <p style={styles.error}>{errorMessage}</p> : null}
+            {geneExpData ? <GeneExpBarChart data={geneExpData} /> : null}
             {/* <LifespanBoxplot /> */}
         </div>
    );
