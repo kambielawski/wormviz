@@ -4,15 +4,18 @@ import React, { useState } from 'react';
 import SearchBar from './SearchBar';
 import GeneExpBarChart from './GeneExpBarChart';
 import LifespanBoxplot from './LifespanBoxplot/LifespanBoxplot';
+import WBGeneOverview from './WBGeneOverview';
 
-const BACKEND_HOST = '0.0.0.0:8000';
+const BACKEND_HOST = 'ec2-3-14-80-149.us-east-2.compute.amazonaws.com:8000';
 
 function DataView({ history }) {
 
     const [geneExpData, setGeneExpData] = useState('');
+    const [wbWidget, setWbWidget] = useState(null);
     const [errorMessage, setErrorMessage] = useState(null);
 
     function queryGene(wormbaseid) {
+        setErrorMessage(null);
         fetch(`http://${BACKEND_HOST}/expression/${wormbaseid}`)
             .then((res) => {
               return res.json();
@@ -21,7 +24,13 @@ function DataView({ history }) {
                 if (data.error) {
                   setErrorMessage(data.error);
                 } else {
-                  setGeneExpData(data);
+                    setGeneExpData(data);
+                    fetch(`https://wormbase.org//rest/widget/gene/${wormbaseid}/overview`)
+                        .then(res => res.json())
+                        .then((d) => {
+                            setWbWidget(d);
+                        })
+                        .catch(e => console.error(e.message));
                 }
             })
             .catch((e) => {
@@ -36,10 +45,10 @@ function DataView({ history }) {
             <div style={styles.searchBar}>
                 <SearchBar setGeneExp={queryGene} />
             </div>
-            {/* <BarGraph data={data} /> */}
-            {geneExpData ? <GeneExpBarChart data={geneExpData} /> 
-                         : <p style={styles.error}>{errorMessage}</p>}
-            <LifespanBoxplot />
+            {errorMessage ? <p style={styles.error}>{errorMessage}</p> : null}
+            {geneExpData ? <GeneExpBarChart data={geneExpData} /> : null}
+            {wbWidget ? <WBGeneOverview overview={wbWidget} /> : null}
+            {/* <LifespanBoxplot /> */}
         </div>
    );
 }
