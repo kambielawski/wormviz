@@ -6,7 +6,7 @@ import { withRouter } from 'react-router-dom';
 const LOGIN_SUCCESS = 'LOGIN_SUCCESS';
 const LOGIN_FAILURE = 'LOGIN_FAILURE';
 
-const BACKEND_HOST = 'ec2-3-14-80-149.us-east-2.compute.amazonaws.com:8000';
+const BACKEND_HOST = 'ec2-3-129-98-89.us-east-2.compute.amazonaws.com:8000';
 
 const Login = withRouter(({ history }) => {
 

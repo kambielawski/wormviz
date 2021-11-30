@@ -7,7 +7,7 @@ import GeneExpBarChart from './GeneExpBarChart';
 // import LifespanBoxplot from './LifespanBoxplot/LifespanBoxplot';
 import WBGeneOverview from './WBGeneOverview';
 
-const BACKEND_HOST = '0.0.0.0:8000';
+const BACKEND_HOST = 'ec2-3-129-98-89.us-east-2.compute.amazonaws.com:8000';
 
 function DataView({ history }) {
 
