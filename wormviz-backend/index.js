@@ -1,3 +1,5 @@
+var fs = require('fs');
+
 const express = require('express');
 const app = express();
 const cors = require('cors');
@@ -168,6 +170,36 @@ app.post('/test_post', async (req, res) => {
 
     } catch (err) {
         console.error(err);
+    }
+});
+
+app.post('/refresh_alias_db', async (req, res) => {
+    try {
+        console.log('Deleting current alias table...');
+        await pool.query('DROP TABLE IF EXISTS wbgene_aliases;');
+
+        console.log('Creating new table...');
+        await pool.query('CREATE TABLE wbgene_aliases(alias VARCHAR(255) PRIMARY KEY, wbgene VARCHAR(255));');
+
+        console.log('Reloading alias entries...');
+
+        // read csv and post entries into database
+        var textByLine = fs.readFileSync("./alias_db.csv").toString().split("\n");
+        const aliases = textByLine.map((line) => line.split(","));
+        let query = 'INSERT INTO wbgene_aliases (alias, wbgene) VALUES ';
+        for (let pair of aliases.slice(1)) {
+            if (pair[0] && pair[1])
+                query += `('${pair[0]}', '${pair[1]}'), `;
+        }
+        query = query.slice(0,query.length-2);
+        query += ' RETURNING *;';
+
+        const entries = await pool.query(query);
+        
+        res.json(entries.rows);
+
+    } catch (err) {
+        console.error(err.message);
     }
 });
 
