@@ -26,7 +26,7 @@ app.get('/expression/:id', async (req, res) => {
         if (expressionEntry.rows.length) {
             res.json(expressionEntry.rows);
         } else {
-            res.json({ error: `Couldn't find Wormbase ID ${id || ''} in database` });
+            res.json({ error: `Couldn't find gene ${id || ''} in database` });
         }
     } catch (err) {
         console.error(err.message);
@@ -173,6 +173,8 @@ app.post('/test_post', async (req, res) => {
     }
 });
 
+/* ALIAS DATABASE ENDPOINTS */
+
 app.post('/refresh_alias_db', async (req, res) => {
     try {
         console.log('Deleting current alias table...');
@@ -197,6 +199,34 @@ app.post('/refresh_alias_db', async (req, res) => {
         const entries = await pool.query(query);
         
         res.json(entries.rows);
+
+    } catch (err) {
+        console.error(err.message);
+    }
+});
+
+app.get('/getbyalias/:alias', async (req, res) => {
+    try {
+        const { alias } = req.params;
+
+        const dbRes = await pool.query(`SELECT * FROM wbgene_aliases WHERE alias = $1;`, [alias]);
+
+        if (dbRes.rows)
+            res.json(dbRes.rows[0]);
+        else
+            res.json({ error: `Couldn't find gene ${alias} in database` });
+    } catch (err) {
+        console.error(err.message);
+    }
+});
+
+app.get('/getallaliases/:wbgene', async (req, res) => {
+    try {
+        const { wbgene } = req.params;
+
+        const dbRes = await pool.query(`SELECT * FROM wbgene_aliases WHERE wbgene = $1;`, [wbgene]);
+
+        res.json(dbRes.rows);
 
     } catch (err) {
         console.error(err.message);

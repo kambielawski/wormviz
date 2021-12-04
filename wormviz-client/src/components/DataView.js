@@ -1,12 +1,13 @@
 // import './App.css';
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 
 import SearchBar from './SearchBar';
 import GeneExpBarChart from './GeneExpBarChart';
-import LifespanBoxplot from './LifespanBoxplot/LifespanBoxplot';
+// import LifespanBoxplot from './LifespanBoxplot/LifespanBoxplot';
 import WBGeneOverview from './WBGeneOverview';
 
-const BACKEND_HOST = 'ec2-3-14-80-149.us-east-2.compute.amazonaws.com:8000';
+const BACKEND_HOST = '0.0.0.0:8000';
 
 function DataView({ history }) {
 
@@ -14,18 +15,37 @@ function DataView({ history }) {
     const [wbWidget, setWbWidget] = useState(null);
     const [errorMessage, setErrorMessage] = useState(null);
 
-    function queryGene(wormbaseid) {
+    async function queryGene(search) {
         setErrorMessage(null);
-        fetch(`http://${BACKEND_HOST}/expression/${wormbaseid}`)
-            .then((res) => {
-              return res.json();
-            })
+        let wbgene = search;
+        if (wbgene.slice(0,6) !== 'WBGene') {
+            /* Search for alias */
+            console.log('searching for alias' + `http://${BACKEND_HOST}/getbyalias/${search}`);
+            await fetch(`http://${BACKEND_HOST}/getbyalias/${search}`)
+                .then((res) => res.json())
+                .then((data) => {
+                    console.log(data);
+                    if (data.error) {
+                        setErrorMessage(data.error);
+                        return;
+                    } else {
+                        wbgene = data.wbgene;
+                    }
+                })
+                .catch((e) => console.error(e.message));
+        }
+
+        console.log(wbgene);
+        
+        fetch(`http://${BACKEND_HOST}/expression/${wbgene}`)
+            .then((res) => res.json())
             .then((data) => {
                 if (data.error) {
-                  setErrorMessage(data.error);
+                  setErrorMessage(data.error + ` (${search} not found)`);
                 } else {
                     setGeneExpData(data);
-                    fetch(`https://wormbase.org//rest/widget/gene/${wormbaseid}/overview`)
+                    /* Grab WB widget */
+                    fetch(`https://wormbase.org//rest/widget/gene/${wbgene}/overview`)
                         .then(res => res.json())
                         .then((d) => {
                             setWbWidget(d);
@@ -40,16 +60,24 @@ function DataView({ history }) {
     }
 
     return (
-        <div style={styles.container}>
-            {history.location?.state?.loginError ? <p style={styles.error}>{history.location?.state?.loginError}</p> : null}
-            <div style={styles.searchBar}>
-                <SearchBar setGeneExp={queryGene} />
+        <>
+            <div style={styles.header}>
+                <Link to={{
+                    pathname: '/upload',
+                    state: history.location?.state,
+                }}>Upload Data</Link>
             </div>
-            {errorMessage ? <p style={styles.error}>{errorMessage}</p> : null}
-            {geneExpData ? <GeneExpBarChart data={geneExpData} /> : null}
-            {wbWidget ? <WBGeneOverview overview={wbWidget} /> : null}
-            {/* <LifespanBoxplot /> */}
-        </div>
+            <div style={styles.container}>
+                {history.location?.state?.loginError ? <p style={styles.error}>{history.location?.state?.loginError}</p> : null}
+                <div style={styles.searchBar}>
+                    <SearchBar setGeneExp={queryGene} />
+                </div>
+                {errorMessage ? <p style={styles.error}>{errorMessage}</p> : null}
+                {geneExpData ? <GeneExpBarChart data={geneExpData} /> : null}
+                {wbWidget ? <WBGeneOverview overview={wbWidget} /> : null}
+                {/* <LifespanBoxplot /> */}
+            </div>
+        </>
    );
 }
 
@@ -64,6 +92,12 @@ const styles = {
     },
     error: {
         color: 'red'
+    },
+    header: { 
+        display: 'flex', 
+        justifyContent: 'space-between', 
+        padding: 10, 
+        backgroundColor: '#EAEAEA',
     }
 }
 
