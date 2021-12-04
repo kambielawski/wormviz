@@ -41,7 +41,7 @@ const UploadScreen = ({ history }) => {
 
         let i=0, j=UPLOAD_BATCH_LIMIT;
         while (i < items.length) {
-            await fetch(`http://${BACKEND_HOST}/test_post`, 
+            await fetch(`http://${BACKEND_HOST}/expression`, 
                 { 
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -105,11 +105,6 @@ const UploadScreen = ({ history }) => {
                     pathname: '/',
                     state: history.location.state,
                 }}>Home</Link>
-                {/* <GoogleLogout
-                    clientId={clientId}
-                    buttonText="Logout"
-                    onLogoutSuccess={() => history.push('/')}
-                /> */}
             </div>
             <div style={styles.container}>
                 <div style={styles.subContainer}>
